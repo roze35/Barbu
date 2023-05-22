@@ -2,17 +2,8 @@ package com.example.barbu
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Parcel
-import android.util.Log
 import androidx.databinding.DataBindingUtil
-import com.example.barbu.cardGame.Card
-import com.example.barbu.fragment.IGFragmentEast
-import com.example.barbu.fragment.IGFragmentNorth
-import com.example.barbu.fragment.IGFragmentSouth
-import com.example.barbu.fragment.IGFragmentWest
 import com.example.barbu.databinding.ActivityMainBinding
-import com.example.barbu.utils.Rank
-import com.example.barbu.utils.Suit
 
 class MainActivity : AppCompatActivity() {
     lateinit var bindingMain : ActivityMainBinding
