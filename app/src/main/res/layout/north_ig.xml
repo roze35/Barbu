@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/idMainConstraintLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#8BC34A"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/idEstName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/west"
+        android:textColor="#004D40"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/idEastName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/east"
+        android:textColor="#004D40"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/idSouthName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center|center_vertical"
+        android:text="@string/south"
+        android:textColor="#004D40"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/llWestCards"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:divider="@android:drawable/divider_horizontal_bright"
+        android:orientation="horizontal"
+        android:showDividers="middle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/idNorthName"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="@string/north"
+            android:textColor="#004D40"
+            android:textSize="24sp" />
+
+        <ImageView
+            android:id="@+id/ivCard1E"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/ace_of_clubs_description"
+            app:srcCompat="@drawable/ace_of_clubs" />
+
+        <ImageView
+            android:id="@+id/ivCard2E"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/ace_of_diamonds_description"
+            app:srcCompat="@drawable/ace_of_diamonds" />
+
+        <ImageView
+            android:id="@+id/ivCard3E"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/ace_of_hearts_description"
+            app:srcCompat="@drawable/ace_of_hearts" />
+
+        <ImageView
+            android:id="@+id/ivCard4E"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/ace_of_spades_description"
+            app:srcCompat="@drawable/ace_of_spades" />
+
+        <ImageView
+            android:id="@+id/ivCard5E"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/ace_of_diamonds_description"
+            app:srcCompat="@drawable/ace_of_diamonds" />
+
+        <ImageView
+            android:id="@+id/ivCard6E"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/ace_of_hearts_description"
+            app:srcCompat="@drawable/ace_of_hearts" />
+
+        <ImageView
+            android:id="@+id/ivCard7E"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/ace_of_spades_description"
+            app:srcCompat="@drawable/ace_of_spades" />
+
+        <ImageView
+            android:id="@+id/ivCard8E"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/ace_of_clubs_description"
+            app:srcCompat="@drawable/ace_of_clubs" />
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clTrick"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/llWestCards"
+        app:layout_constraintEnd_toStartOf="@+id/idEastName"
+        app:layout_constraintStart_toEndOf="@+id/idEstName">
+
+        <ImageView
+            android:id="@+id/ivTrick1"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:contentDescription="@string/king_of_hearts_description"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/king_of_hearts" />
+
+        <ImageView
+            android:id="@+id/ivTrick2"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:contentDescription="@string/king_of_hearts_description"
+            app:layout_constraintEnd_toStartOf="@+id/ivTrick4"
+            app:layout_constraintStart_toEndOf="@+id/ivTrick1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/king_of_hearts" />
+
+        <ImageView
+            android:id="@+id/ivTrick3"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:contentDescription="@string/king_of_hearts_description"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivTrick4"
+            app:layout_constraintStart_toEndOf="@+id/ivTrick1"
+            app:srcCompat="@drawable/king_of_hearts" />
+
+        <ImageView
+            android:id="@+id/ivTrick4"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:contentDescription="@string/king_of_hearts_description"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/king_of_hearts" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

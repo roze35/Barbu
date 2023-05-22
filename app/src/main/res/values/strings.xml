@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Barbu</string>
+    <string name="north">North</string>
+    <string name="west">West</string>
+    <string name="east">East</string>
+    <string name="south">South</string>
+    <string name="ace_of_clubs_description">ace_of_clubs</string>
+    <string name="ace_of_diamonds_description">ace_of_diamonds_description</string>
+    <string name="ace_of_hearts_description">ace_of_hearts_description</string>
+    <string name="ace_of_spades_description">ace_of_spades_description</string>
+    <string name="king_of_hearts_description">king_of_hearts_description</string>
+    <string name="play">Play</string>
+    <string name="start">Start</string>
+</resources>
