@@ -1,37 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph.xml"
     app:startDestination="@id/IGFragmentStart">
-    <fragment
-        android:id="@+id/IGFragmentSouth"
-        android:name="com.example.barbu.fragment.IGFragmentSouth"
-        android:label="IGFragmentSouth" >
-        <action
-            android:id="@+id/action_IGFragmentSouth_to_IGFragmentWest"
-            app:destination="@id/IGFragmentWest" />
-        <action
-            android:id="@+id/action_IGFragmentSouth_self"
-            app:destination="@id/IGFragmentSouth" />
-    </fragment>
-    <fragment
-        android:id="@+id/IGFragmentWest"
-        android:name="com.example.barbu.fragment.IGFragmentWest"
-        android:label="IGFragmentWest" >
-        <action
-            android:id="@+id/action_IGFragmentWest_to_IGFragmentSouth"
-            app:destination="@id/IGFragmentSouth" />
-        <action
-            android:id="@+id/action_IGFragmentWest_self"
-            app:destination="@id/IGFragmentWest" />
-    </fragment>
     <fragment
         android:id="@+id/IGFragmentStart"
         android:name="com.example.barbu.fragment.IGFragmentStart"
         android:label="IGFragmentStart" >
         <action
-            android:id="@+id/action_IGFragmentStart_to_IGFragmentSouth"
-            app:destination="@id/IGFragmentSouth" />
+            android:id="@+id/action_IGFragmentStart_to_IGFragment"
+            app:destination="@id/IGFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/IGFragment"
+        android:name="com.example.barbu.fragment.IGFragment"
+        android:label="IGFragment" >
+        <action
+            android:id="@+id/action_IGFragment_to_IGFragmentStart"
+            app:destination="@id/IGFragmentStart" />
+        <action
+            android:id="@+id/action_IGFragment_self"
+            app:destination="@id/IGFragment" />
+        <argument
+            android:name="position"
+            app:argType="com.example.barbu.Position" />
     </fragment>
 </navigation>

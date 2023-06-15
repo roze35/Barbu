@@ -56,11 +56,11 @@
             android:text="@string/south"
             android:textColor="#004D40"
             android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="@+id/rvListCardSouth"
+            app:layout_constraintBottom_toBottomOf="@+id/rvHand"
             app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvListCardSouth"
+            android:id="@+id/rvHand"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:foregroundGravity="center_horizontal"
