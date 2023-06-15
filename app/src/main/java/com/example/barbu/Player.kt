@@ -1,10 +1,8 @@
 package com.example.barbu
 
-import android.os.Parcel
-import android.os.Parcelable
 import android.util.Log
 import com.example.barbu.cardGame.Card
-import kotlin.random.Random
+import com.example.barbu.utils.Utils
 
 open class Player(val name: String?, val pos:Position) {
     var hand: MutableSet<Card> = mutableSetOf()
@@ -15,29 +13,18 @@ open class Player(val name: String?, val pos:Position) {
         winCards.clear()
     }
 
-    open fun useInterface():Boolean{
-        return false
-    }
-
     fun removeCard(c:Card){
         hand.remove(c)
     }
 
-    fun addToHand(card: Card?) {
+    fun addCard(card: Card?) {
         if (card != null) {
             hand.add(card)
         }
     }
 
-    fun removeFromHand(card: Card) {
-        hand.remove(card)
-    }
-
-    fun playOneCard(possibleCards:MutableSet<Card>, trick:Trick): Card {
-        val random= Random
-        val list=possibleCards.toList()
-        val randomIndex=random.nextInt(possibleCards.size)
-        val card=list[randomIndex]
+    fun randomPlay(possibleCards:MutableSet<Card>, trick:Trick): Card {
+        val card= Utils.randomDeal(possibleCards,trick)
         hand.remove(card)
         return card
     }
@@ -48,19 +35,13 @@ open class Player(val name: String?, val pos:Position) {
         }
     }
 
-    fun showHand() {
-        Log.d("affichage","")
-        Log.d("affichage",("$name's hand:"))
+    fun showHandInLog(tag:String) {
+        Log.d(tag,"")
+        Log.d(tag,("$name's hand:"))
         for (card in hand) {
-            Log.d("affichage",("${card.rank} of ${card.suit}"))
+            Log.d(tag,("${card.rank} of ${card.suit}"))
         }
-
     }
-
-    fun gameOver():MutableSet<Card>{
-        return winCards
-    }
-
 
 }
 
