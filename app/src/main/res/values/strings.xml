@@ -11,4 +11,11 @@
     <string name="king_of_hearts_description">king_of_hearts_description</string>
     <string name="play">Play</string>
     <string name="start">Start</string>
+    <string name="new_game">New Game</string>
+    <string name="end">End</string>
+    <string name="northname">northName</string>
+    <string name="zero">0</string>
+    <string name="westname">westName</string>
+    <string name="eastname">eastName</string>
+    <string name="southname">southName</string>
 </resources>

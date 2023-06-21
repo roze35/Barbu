@@ -1,9 +1,7 @@
 package com.example.barbu
 
 interface ObservableTrick {
-    fun addObserver(observer: ObserverTrick)
-    fun removeObserver(observer:ObserverTrick)
-    fun notifyFollowingPlayer()
-    fun notifyEndTrick()
-    fun notifyNewTrick()
+    fun addObserverTrick(o:ObserverTrick)
+    fun removeObseverTrick(o:ObserverTrick)
+    fun notifyObserverTrick()
 }

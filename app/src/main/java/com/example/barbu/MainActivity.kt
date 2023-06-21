@@ -2,7 +2,6 @@ package com.example.barbu
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.util.Log
 import androidx.databinding.DataBindingUtil
 import com.example.barbu.databinding.ActivityMainBinding
@@ -13,6 +12,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
+
+        Referee.addPlayer(GraphicalPlayer("Lolo"))
+        Referee.addPlayer(Player("ouest"))
+        Referee.addPlayer(Player("north"))
+        Referee.addPlayer(Player("east"))
 
 
         Log.d("affichage","onCreate: MainActivity")
