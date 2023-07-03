@@ -15,14 +15,34 @@
         android:id="@+id/IGFragment"
         android:name="com.example.barbu.fragment.IGFragment"
         android:label="IGFragment" >
+        <argument
+            android:name="joueur"
+            app:argType="com.example.barbu.GraphicalPlayer" />
         <action
-            android:id="@+id/action_IGFragment_to_IGFragmentStart"
+            android:id="@+id/action_IGFragment_to_IGFragmentScore"
+            app:destination="@id/IGFragmentScore" />
+    </fragment>
+    <fragment
+        android:id="@+id/IGFragmentScore"
+        android:name="com.example.barbu.fragment.IGFragmentScore"
+        android:label="IGFragmentScore" >
+        <action
+            android:id="@+id/action_IGFragmentScore_to_IGFragmentStart"
             app:destination="@id/IGFragmentStart" />
         <action
-            android:id="@+id/action_IGFragment_self"
+            android:id="@+id/action_IGFragmentScore_to_IGFragment"
             app:destination="@id/IGFragment" />
         <argument
-            android:name="position"
-            app:argType="com.example.barbu.Position" />
+            android:name="southScore"
+            app:argType="integer" />
+        <argument
+            android:name="westScore"
+            app:argType="integer" />
+        <argument
+            android:name="northScore"
+            app:argType="integer" />
+        <argument
+            android:name="eastScore"
+            app:argType="integer" />
     </fragment>
 </navigation>

@@ -1,19 +1,34 @@
 package com.example.barbu
 
-import android.util.Log
+import android.os.Parcel
+import android.os.Parcelable
 import com.example.barbu.cardGame.Card
 import com.example.barbu.utils.Utils
 
-open class Player(val name: String?, val pos:Position) {
+open class Player(val name: String, val position:Position):Parcelable {
     var hand: MutableSet<Card> = mutableSetOf()
     var winCards: MutableSet<Card> = mutableSetOf()
 
-    fun initGame(){
+    constructor(parcel: Parcel) : this(parcel.readString() ?: "",Position.values()[parcel.readInt()]) {
+        val handList = mutableListOf<Card>()
+        val winCardsList = mutableListOf<Card>()
+        parcel.readTypedList(handList, Card.CREATOR)
+        parcel.readTypedList(winCardsList, Card.CREATOR)
+        hand.addAll(handList)
+        winCards.addAll(winCardsList)
+    }
+
+
+    open fun reInit(){
         hand.clear()
         winCards.clear()
     }
 
-    fun removeCard(c:Card){
+    open suspend fun gameOver(southScore:Int, westScore:Int, northScore:Int, eastScore:Int){
+
+    }
+
+    open fun removeCard(c:Card){
         hand.remove(c)
     }
 
@@ -23,23 +38,31 @@ open class Player(val name: String?, val pos:Position) {
         }
     }
 
-    fun randomPlay(possibleCards:MutableSet<Card>, trick:Trick): Card {
-        val card= Utils.randomDeal(possibleCards,trick)
+    fun playRandomCard(possibleCards:MutableSet<Card>): Card {
+        val card= Utils.randomDeal(possibleCards)
         hand.remove(card)
         return card
     }
 
-    fun win(cards:MutableSet<Card>){
-        for (c in cards){
-            winCards.add(c)
-        }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(name)
+        parcel.writeInt(position.ordinal)
+        parcel.writeTypedList(hand.toList())
+        parcel.writeTypedList(winCards.toList())
     }
 
-    fun showHandInLog(tag:String) {
-        Log.d(tag,"")
-        Log.d(tag,("$name's hand:"))
-        for (card in hand) {
-            Log.d(tag,("${card.rank} of ${card.suit}"))
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Player> {
+        override fun createFromParcel(parcel: Parcel): Player {
+            return Player(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Player?> {
+            return arrayOfNulls(size)
         }
     }
 

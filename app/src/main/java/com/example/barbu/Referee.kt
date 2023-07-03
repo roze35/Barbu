@@ -5,34 +5,113 @@ import com.example.barbu.cardGame.Card
 import com.example.barbu.cardGame.Deck
 import com.example.barbu.utils.Suit
 import com.example.barbu.utils.Utils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
-class Referee : ObserverTrick{
-
-
+class Referee {
 
     companion object {
-        val deck: Deck = Deck()
+        private var numTrick=1
+        private val players=mutableListOf<Player>()
+        private val deck: Deck = Deck()
         val trick: Trick = Trick()
-        val southPlayer = GraphicalPlayer("South", Position.SOUTH)
-        val westPlayer = Player("West", Position.WEST)
-        val northPlayer = Player("North", Position.NORTH)
-        val eastPlayer = Player("East", Position.EAST)
-        var currentPosition = Position.SOUTH
-            set(value) {
-                //Log.d("Trick","Modification de la position courante "+value)
-                field=value
-            }
-        var nextPosition=Position.WEST
 
-        fun requiredSuit(hand: MutableSet<Card>): MutableSet<Card> {
-            var possibleCards: MutableSet<Card> = mutableSetOf()
+        private var currentPosition = 0
+        lateinit var humanPlayer:GraphicalPlayer
+
+        fun currentPlayer():Player{
+            return players[currentPosition]
+        }
+
+        fun addPlayer(name:String){
+            val p =when(players.size){
+                0 -> GraphicalPlayer(name,Position.SOUTH)
+                1-> Player(name,Position.WEST)
+                2-> Player(name,Position.NORTH)
+                else-> Player(name,Position.EAST)
+            }
+            players.add(p)
+            if (p is GraphicalPlayer) humanPlayer=p
+        }
+
+        fun nextPlayer(){
+            currentPosition=Utils.nextPosition(currentPosition)
+        }
+
+        suspend fun justWait(){
+            delay(1000)
+        }
+
+        suspend fun playIACards()= withContext(Dispatchers.Default) {
+            var currentPlayer = players[currentPosition]
+            while ((!trick.isOver()) && (currentPlayer !is GraphicalPlayer)) {
+                val card = currentPlayer.playRandomCard(possibleCards(currentPlayer.hand))
+                Log.d("affichage", "carte jouee $card par ${currentPlayer.name}")
+                trick.playCard(card, currentPlayer)
+                withContext(Dispatchers.Main) {
+                    humanPlayer.showCard()
+                }
+                delay(1000)
+                currentPosition = Utils.nextPosition(currentPosition)
+                currentPlayer = players[currentPosition]
+            }
+
+            if (trick.isOver()) {
+                numTrick += 1
+                Log.d("affichage", "numero de pli $numTrick")
+                currentPosition = players.indexOf(trick.winPlayer)  % 4
+
+                withContext(Dispatchers.Main) {
+                    humanPlayer.showCard()
+                }
+
+                trick.pickup()
+
+                withContext(Dispatchers.Main) {
+                    humanPlayer.showCard()
+                }
+                if (numTrick > 8) {
+                    val southScore = computePoint(players[0].winCards)
+                    val westScore = computePoint(players[1].winCards)
+                    val northScore = computePoint(players[2].winCards)
+                    val eastScore = computePoint(players[3].winCards)
+                    gameOver(southScore, westScore, northScore, eastScore)
+                } else {
+                    withContext(Dispatchers.Main) {
+                        humanPlayer.igFragment.trickOver()
+                    }
+                }
+            }
+        }
+
+
+        fun playCard(c: Card): Boolean {
+            val p= players[currentPosition]
+            val possibleCards: MutableSet<Card> = possibleCards(p.hand)
+            return if (c in possibleCards) {
+                p.removeCard(c)
+                trick.playCard(c,p)
+                true
+            } else false
+        }
+
+        private suspend fun gameOver(southScore:Int, westScore:Int, northScore:Int, eastScore:Int){
+            for (p in players){
+                p.gameOver(southScore,westScore,northScore,eastScore)
+            }
+
+        }
+
+        private fun extractRequiredSuit(hand: MutableSet<Card>): MutableSet<Card> {
+            val possibleCards: MutableSet<Card> = mutableSetOf()
             for (c in hand) {
                 if (c.suit == trick.requiredSuit()) possibleCards.add(c)
             }
             return possibleCards
         }
 
-        fun computePoint(winCards: MutableSet<Card>): Int {
+        private fun computePoint(winCards: MutableSet<Card>): Int {
             var res = 0
             for (c in winCards) {
                 if (c.suit == Suit.HEARTS) res -= 5
@@ -42,102 +121,43 @@ class Referee : ObserverTrick{
         }
 
 
-        fun playRandom():Card{
-            val currentPlayer:Player=when(currentPosition){
-                Position.SOUTH->{southPlayer}
-                Position.WEST->{westPlayer}
-                Position.NORTH->{northPlayer}
-                Position.EAST->{eastPlayer}
-            }
-                val possibleCards= possibleCards(currentPlayer.hand)
-                val c= currentPlayer.randomPlay(possibleCards, trick)
-                trick.playCard(c,currentPlayer)
-                currentPlayer.removeCard(c)
-                return c
-
-        }
-
-        fun possibleCards(hand: MutableSet<Card>): MutableSet<Card> {
-            var possibleCards: MutableSet<Card> = mutableSetOf()
+        private fun possibleCards(hand: MutableSet<Card>): MutableSet<Card> {
+            var possibleCards: MutableSet<Card>
             if (trick.isEmpty()) {
                 possibleCards = hand
             } else {
-                possibleCards = requiredSuit(hand)
+                possibleCards = extractRequiredSuit(hand)
                 if (possibleCards.isEmpty()) possibleCards=hand
 
             }
             return possibleCards
         }
 
-        fun reinit() {
-            southPlayer.initGame()
-            westPlayer.initGame()
-            northPlayer.initGame()
-            eastPlayer.initGame()
+        private fun reInit() {
+            numTrick=1
+            for (p in players){
+                p.reInit()
+            }
             deck.reinit()
         }
 
-        fun playCard(p: Player, c: Card): Boolean {
-            //Log.d("affichage","apple de playcard pour le joueur "+p.name)
-            //Log.d("affichage","test la carte "+c)
-            //Log.d("affichage","Liste des cartes du joueurs : ")
-            //p.showHandInLog("affichage")
-            var possibleCards: MutableSet<Card> = possibleCards(p.hand)
-            //Log.d("affichage","Nombre de cartes possibles : "+possibleCards.size)
-            //Log.d("affichage","Les cartes possibles : ")
-            //Log.d("affichage",""+possibleCards)
-            if (c in possibleCards) {
-                trick.playCard(c,p)
-                p.removeCard(c)
-                return true
-            } else return false
-        }
 
-
-
-        fun playCard(c: Card): Boolean {
-            when (currentPosition) {
-                Position.SOUTH -> {return playCard(southPlayer, c) }
-                Position.WEST -> {return playCard(westPlayer, c) }
-                Position.NORTH -> {return playCard(northPlayer, c) }
-                Position.EAST -> {return playCard(eastPlayer, c) }
-            }
-            // non attention le joueur suivant doit etre fait dans trick
-            //currentPosition= Utils.positionSuivante(currentPosition)
-
-            return false
-        }
 
         fun dealCards(){
-            reinit()
+            reInit()
             deck.shuffle()
             var card : Card?
             do {
-                card = deck.deal()
-                westPlayer.addCard(card)
-                card = deck.deal()
-                northPlayer.addCard(card)
-                card = deck.deal()
-                eastPlayer.addCard(card)
-                card = deck.deal()
-                southPlayer.addCard(card)
+                for (p in players) {
+                    card = deck.deal()
+                    p.addCard(card)
+                }
             } while(!deck.isEmpty())
-            //southPlayer.showHand()
         }
 
 
     }
 
-    override fun followingPlayer() {
-    }
-
-    override fun endTrick(winPlayer:Player,trick:MutableSet<Card>) {
-        winPlayer.win(trick)
-    }
-
-    override fun newTrick(){
-
-    }
 
 
 }

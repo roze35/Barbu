@@ -2,17 +2,21 @@ package com.example.barbu
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.util.Log
 import androidx.databinding.DataBindingUtil
 import com.example.barbu.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    lateinit var bindingMain : ActivityMainBinding
+    private lateinit var bindingMain : ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
+
+        Referee.addPlayer("Lolo")
+        Referee.addPlayer("ouest")
+        Referee.addPlayer("north")
+        Referee.addPlayer("east")
 
 
         Log.d("affichage","onCreate: MainActivity")
