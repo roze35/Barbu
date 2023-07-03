@@ -1,18 +1,23 @@
 package com.example.barbu.adapter
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView.*
-import com.example.barbu.Player
+import com.example.barbu.GraphicalPlayer
+import com.example.barbu.Position
 import com.example.barbu.R
 import com.example.barbu.Referee
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
-class HandAdapter(player:Player) : Adapter<HandAdapter.MyViewHolder>() {
-    private val p:Player=player
+class HandAdapter(player:GraphicalPlayer) : Adapter<HandAdapter.MyViewHolder>() {
+    private val p:GraphicalPlayer=player
 
 
     class MyViewHolder(itemView: View) : ViewHolder(itemView) {
@@ -29,6 +34,7 @@ class HandAdapter(player:Player) : Adapter<HandAdapter.MyViewHolder>() {
         return p.hand.size
     }
 
+    @SuppressLint("NotifyDataSetChanged", "DiscouragedApi")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         //Log.d("affichage","Position du joueur courant "+Referee.currentPosition)
         //if (!Referee.trick.isEmpty()) Log.d("affichage","premiere carte jouée "+Referee.trick.requiredSuit());
@@ -40,14 +46,27 @@ class HandAdapter(player:Player) : Adapter<HandAdapter.MyViewHolder>() {
             context.resources.getIdentifier(cardString, "drawable", context.packageName)
         holder.cardView.setImageResource(imageCardId)
         holder.cardView.setOnClickListener {
-            val c = p.hand.toList()[position]
-            //Log.d("affichage", "Essaie de jouer la carte " + c.toString())
-            if (Referee.playCard(c)) {
-                Log.d("affichage", "Carte jouee $c par ${p.name}")
-                notifyDataSetChanged()
-                Referee.nextPlayer()
+            if (Referee.currentPlayer().position==Position.SOUTH) {
+                val c = p.hand.toList()[position]
+                //Log.d("affichage", "Essaie de jouer la carte " + c.toString())
+                if (Referee.playCard(c)) {
+                    Log.d("affichage", "Carte jouee $c par ${p.name}")
+                    notifyDataSetChanged()
+                    CoroutineScope(Dispatchers.Main).launch{
+                        p.igFragment.showCards()
+                    }
+
+                    CoroutineScope(Dispatchers.Default).launch{
+                        Referee.justWait()
+                        Referee.nextPlayer()
+                        Referee.playIACards()
+                    }
+
+                } else {
+                    Log.d("affichage", "Argh... il est impossigle de jouer cette carte")
+                }
             } else {
-                Log.d("affichage", "Argh... il est impossigle de jouer cette carte")
+                Log.d("affichage","ce n'est pas au joueur sud de jouer mais au joueur "+Referee.currentPlayer().position)
             }
         }
     }

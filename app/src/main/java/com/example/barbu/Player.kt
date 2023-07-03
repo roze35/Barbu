@@ -2,15 +2,14 @@ package com.example.barbu
 
 import android.os.Parcel
 import android.os.Parcelable
-import android.util.Log
 import com.example.barbu.cardGame.Card
 import com.example.barbu.utils.Utils
 
-open class Player(val name: String):Parcelable {
+open class Player(val name: String, val position:Position):Parcelable {
     var hand: MutableSet<Card> = mutableSetOf()
     var winCards: MutableSet<Card> = mutableSetOf()
 
-    constructor(parcel: Parcel) : this(parcel.readString() ?: "") {
+    constructor(parcel: Parcel) : this(parcel.readString() ?: "",Position.values()[parcel.readInt()]) {
         val handList = mutableListOf<Card>()
         val winCardsList = mutableListOf<Card>()
         parcel.readTypedList(handList, Card.CREATOR)
@@ -25,7 +24,7 @@ open class Player(val name: String):Parcelable {
         winCards.clear()
     }
 
-    open fun gameOver(southScore:Int,westScore:Int,northScore:Int,eastScore:Int){
+    open suspend fun gameOver(southScore:Int, westScore:Int, northScore:Int, eastScore:Int){
 
     }
 
@@ -45,14 +44,10 @@ open class Player(val name: String):Parcelable {
         return card
     }
 
-    fun winCards(cards:MutableSet<Card>){
-        for (c in cards){
-            winCards.add(c)
-        }
-    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(name)
+        parcel.writeInt(position.ordinal)
         parcel.writeTypedList(hand.toList())
         parcel.writeTypedList(winCards.toList())
     }

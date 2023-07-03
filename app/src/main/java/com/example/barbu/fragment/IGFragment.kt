@@ -11,49 +11,108 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.barbu.GraphicalPlayer
 import com.example.barbu.R
+import com.example.barbu.Referee
 import com.example.barbu.adapter.HandAdapter
-import com.example.barbu.adapter.TrickAdapter
 import com.example.barbu.databinding.SouthIgBinding
+import com.example.barbu.utils.Utils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
-class IGFragment : Fragment(){
-    private lateinit var bindingSouth: SouthIgBinding
-    private val args:IGFragmentArgs by navArgs()
-    private lateinit var graphicalPlayer:GraphicalPlayer
+class IGFragment : Fragment() {
+    private lateinit var binding: SouthIgBinding
+    private val args: IGFragmentArgs by navArgs()
+    private lateinit var graphicalPlayer: GraphicalPlayer
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.d("affichage","appel de onCreateView de IGFragment")
-        bindingSouth =
+        Log.d("affichage", "appel de onCreateView de IGFragment")
+        binding =
             DataBindingUtil.inflate(inflater, R.layout.south_ig, container, false)
-        bindingSouth.rvHand.adapter = HandAdapter(graphicalPlayer)
-        bindingSouth.rvTrick.adapter = TrickAdapter()
+        binding.rvHand.adapter = HandAdapter(graphicalPlayer)
         //Log.d("affichage","bindingSouth=${bindingSouth.rvTrick.adapter}")
-        return bindingSouth.root
+        return binding.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("affichage","appel de onCreate de IGFragment")
-        graphicalPlayer=args.joueur
-        graphicalPlayer.igFragment=this
-    }
+        Log.d("affichage", "appel de onCreate de IGFragment")
+        graphicalPlayer = args.joueur
+        graphicalPlayer.igFragment = this
+        CoroutineScope(Dispatchers.Default).launch{
+                Referee.playIACards()
+        }
 
-
-    fun updateTrick(){
-        //Log.d("affichage","nb Carte du trick ${Referee.trick.size()}")
-        //Log.d("affichage","bindingSouth=${bindingSouth.rvTrick.adapter}")
-        bindingSouth.rvTrick.adapter?.notifyDataSetChanged()
 
     }
 
-    fun gameOver(southScore:Int,westScore:Int,northScore:Int,eastScore:Int){
-        val action = IGFragmentDirections.actionIGFragmentToIGFragmentScore(southScore, westScore, northScore, eastScore)
+    fun trickOver(){
+        CoroutineScope(Dispatchers.Default).launch{
+            Referee.playIACards()
+        }
+    }
+    fun gameOver(southScore: Int, westScore: Int, northScore: Int, eastScore: Int) {
+        val action = IGFragmentDirections.actionIGFragmentToIGFragmentScore(
+            southScore,
+            westScore,
+            northScore,
+            eastScore
+        )
         findNavController().navigate(action)
     }
 
 
+    fun showCards() {
+        if (Referee.trick.southCard != null) {
+            binding.southCard.setImageResource(
+                Utils.getRessourceId(
+                    Referee.trick.southCard!!,
+                    context
+                )
+            )
+        } else binding.southCard.setImageResource(R.drawable.dos)
+
+        if (Referee.trick.westCard != null) {
+            binding.westCard.setImageResource(
+                Utils.getRessourceId(
+                    Referee.trick.westCard!!,
+                    context
+                )
+            )
+        } else {
+            binding.westCard.setImageResource(R.drawable.dos)
+        }
+
+        if (Referee.trick.northCard != null) {
+            binding.northCard.setImageResource(
+                Utils.getRessourceId(
+                    Referee.trick.northCard!!,
+                    context
+                )
+            )
+        } else {
+            binding.northCard.setImageResource(R.drawable.dos)
+        }
+
+        if (Referee.trick.eastCard != null) {
+            binding.eastCard.setImageResource(
+                Utils.getRessourceId(
+                    Referee.trick.eastCard!!,
+                    context
+                )
+            )
+        } else {
+            binding.eastCard.setImageResource(R.drawable.dos)
+        }
+    }
+
+
+
 }
+
+
 

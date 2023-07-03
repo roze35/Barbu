@@ -13,7 +13,6 @@ import com.example.barbu.databinding.StartIgBinding
 
 class IGFragmentStart: Fragment() {
     private lateinit var bindingStart: StartIgBinding
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

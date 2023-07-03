@@ -5,11 +5,14 @@ import com.example.barbu.cardGame.Card
 import com.example.barbu.cardGame.Deck
 import com.example.barbu.utils.Suit
 import com.example.barbu.utils.Utils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 class Referee {
 
     companion object {
-        private var nbTrick=1
+        private var numTrick=1
         private val players=mutableListOf<Player>()
         private val deck: Deck = Deck()
         val trick: Trick = Trick()
@@ -17,55 +20,72 @@ class Referee {
         private var currentPosition = 0
         lateinit var humanPlayer:GraphicalPlayer
 
-        fun addPlayer(p:Player){
+        fun currentPlayer():Player{
+            return players[currentPosition]
+        }
+
+        fun addPlayer(name:String){
+            val p =when(players.size){
+                0 -> GraphicalPlayer(name,Position.SOUTH)
+                1-> Player(name,Position.WEST)
+                2-> Player(name,Position.NORTH)
+                else-> Player(name,Position.EAST)
+            }
             players.add(p)
             if (p is GraphicalPlayer) humanPlayer=p
         }
-        private fun justWait(){
-            try {
-                Thread.sleep(100)
-            } catch (e: InterruptedException) {
-                e.printStackTrace()
-            }
-        }
 
         fun nextPlayer(){
-            if (trick.isOver()) {
-                justWait()
-                nbTrick+=1
-               Log.d("affichage", "numero de pli $nbTrick")
-                currentPosition=(players.indexOf(trick.winPlayer)+3)%4
+            currentPosition=Utils.nextPosition(currentPosition)
+        }
 
-                // astuce d'informaticien : comme avec nextJoueur on va passer au joueurSvuiant
-                //on se place juste avant le joueur devant commencer le tour suivant
+        suspend fun justWait(){
+            delay(1000)
+        }
+
+        suspend fun playIACards()= withContext(Dispatchers.Default) {
+            var currentPlayer = players[currentPosition]
+            while ((!trick.isOver()) && (currentPlayer !is GraphicalPlayer)) {
+                val card = currentPlayer.playRandomCard(possibleCards(currentPlayer.hand))
+                Log.d("affichage", "carte jouee $card par ${currentPlayer.name}")
+                trick.playCard(card, currentPlayer)
+                withContext(Dispatchers.Main) {
+                    humanPlayer.showCard()
+                }
+                delay(1000)
+                currentPosition = Utils.nextPosition(currentPosition)
+                currentPlayer = players[currentPosition]
+            }
+
+            if (trick.isOver()) {
+                numTrick += 1
+                Log.d("affichage", "numero de pli $numTrick")
+                currentPosition = players.indexOf(trick.winPlayer)  % 4
+
+                withContext(Dispatchers.Main) {
+                    humanPlayer.showCard()
+                }
 
                 trick.pickup()
-                humanPlayer.updateTrick()
-                if (nbTrick>8){
-                    val southScore= computePoint(players[0].winCards)
-                    val westScore= computePoint(players[1].winCards)
-                    val northScore= computePoint(players[2].winCards)
-                    val eastScore= computePoint(players[3].winCards)
-                    gameOver(southScore,westScore,northScore,eastScore)
-                }else{
-                    nextPlayer()
-                }
-            } else {
-                currentPosition=Utils.positionSuivante(currentPosition)
-                val currentPlayer= players[currentPosition]
 
-                if (currentPlayer is GraphicalPlayer){
-                    currentPlayer.play()
-                    justWait()
-                }else {
-                    val card = currentPlayer.playRandomCard(possibleCards(currentPlayer.hand))
-                    Log.d("affichage","carte jouee $card par ${currentPlayer.name}")
-                    trick.playCard(card,currentPlayer)
-                    justWait()
-                    nextPlayer()
+                withContext(Dispatchers.Main) {
+                    humanPlayer.showCard()
+                }
+                if (numTrick > 8) {
+                    val southScore = computePoint(players[0].winCards)
+                    val westScore = computePoint(players[1].winCards)
+                    val northScore = computePoint(players[2].winCards)
+                    val eastScore = computePoint(players[3].winCards)
+                    gameOver(southScore, westScore, northScore, eastScore)
+                } else {
+                    withContext(Dispatchers.Main) {
+                        humanPlayer.igFragment.trickOver()
+                    }
                 }
             }
         }
+
+
         fun playCard(c: Card): Boolean {
             val p= players[currentPosition]
             val possibleCards: MutableSet<Card> = possibleCards(p.hand)
@@ -76,14 +96,14 @@ class Referee {
             } else false
         }
 
-        private fun gameOver(southScore:Int,westScore:Int,northScore:Int,eastScore:Int){
+        private suspend fun gameOver(southScore:Int, westScore:Int, northScore:Int, eastScore:Int){
             for (p in players){
                 p.gameOver(southScore,westScore,northScore,eastScore)
             }
 
         }
 
-        private fun requiredSuit(hand: MutableSet<Card>): MutableSet<Card> {
+        private fun extractRequiredSuit(hand: MutableSet<Card>): MutableSet<Card> {
             val possibleCards: MutableSet<Card> = mutableSetOf()
             for (c in hand) {
                 if (c.suit == trick.requiredSuit()) possibleCards.add(c)
@@ -106,7 +126,7 @@ class Referee {
             if (trick.isEmpty()) {
                 possibleCards = hand
             } else {
-                possibleCards = requiredSuit(hand)
+                possibleCards = extractRequiredSuit(hand)
                 if (possibleCards.isEmpty()) possibleCards=hand
 
             }
@@ -114,6 +134,7 @@ class Referee {
         }
 
         private fun reInit() {
+            numTrick=1
             for (p in players){
                 p.reInit()
             }

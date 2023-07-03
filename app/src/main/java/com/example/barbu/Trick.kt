@@ -5,68 +5,72 @@ import com.example.barbu.cardGame.Card
 import com.example.barbu.utils.Suit
 
 
-class Trick : ObservableTrick  {
-    var cards: MutableSet<Card> = mutableSetOf()
-    private lateinit var firstCard: Card
-    private lateinit var winCard: Card
-    lateinit var winPlayer: Player
+class Trick  {
+    var southCard: Card?=null
+    var westCard: Card?=null
+    var northCard: Card?=null
+    var eastCard: Card?=null
+    private var nbCard=0
 
-    private val observers: MutableList<ObserverTrick> = mutableListOf()
+    private var firstCard: Card?=null
+    private var firstPlayer: Player?=null
+    private var winCard: Card?=null
+    var winPlayer: Player?=null
 
-    fun size():Int{
-        return cards.size
-    }
     private fun reInit() {
-        cards.clear()
+        nbCard=0
+        southCard=null
+        westCard=null
+        northCard=null
+        eastCard=null
     }
 
     fun isEmpty(): Boolean {
-        return cards.size == 0
+        return nbCard == 0
     }
 
     fun isOver(): Boolean {
-        return cards.size == 4
+        return nbCard == 4
     }
 
     fun requiredSuit(): Suit {
-        return firstCard.suit
+        return firstCard!!.suit
+    }
+    private fun addCard(c:Card, pos:Position){
+        when(pos){
+            Position.SOUTH->southCard=c
+            Position.EAST->eastCard=c
+            Position.NORTH->northCard=c
+            Position.WEST->westCard=c
+        }
+        nbCard++
     }
 
     fun playCard(c: Card, p: Player) {
         if (isEmpty()) {
             //Log.d("Trace", "Premiere carte jouer $c")
             firstCard = c
+            firstPlayer=p
             winCard = c
             winPlayer = p
-            cards.add(c)
+            addCard(c,p.position)
         } else {
-            if ((c.suit == firstCard.suit) && (c.rank > winCard.rank)) {
+            if ((c.suit == firstCard!!.suit) && (c.rank > winCard!!.rank)) {
                 //Log.d("Trace", "La carte jouee est maitre ")
                 winCard = c
                 winPlayer = p
             }
-            cards.add(c)
+            addCard(c,p.position)
         }
-        notifyObserverTrick()
     }
 
     fun pickup(){
-        Log.d("affichage","Le gagnant est ${winPlayer.name}")
-        winPlayer.winCards(cards)
+        Log.d("affichage","Le gagnant est ${winPlayer!!.name}")
+        winPlayer!!.winCards.add(southCard!!)
+        winPlayer!!.winCards.add(westCard!!)
+        winPlayer!!.winCards.add(northCard!!)
+        winPlayer!!.winCards.add(eastCard!!)
         reInit()
     }
 
-    override fun addObserverTrick(o: ObserverTrick) {
-        observers.add(o)
-    }
-
-    override fun removeObseverTrick(o: ObserverTrick) {
-        observers.remove(o)
-    }
-
-    override fun notifyObserverTrick() {
-        for (observer in observers) {
-            observer.updateTrick()
-        }
-    }
 }

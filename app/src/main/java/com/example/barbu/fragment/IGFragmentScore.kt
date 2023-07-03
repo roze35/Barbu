@@ -27,7 +27,7 @@ class IGFragmentScore : Fragment() {
         bindingScore.tvWestScore.text=t
         t=""+args.northScore
         bindingScore.tvNorthScore.text=t
-        t=""+args.northScore
+        t=""+args.eastScore
         bindingScore.tvEastScore.text=t
 
         bindingScore.btEnd.setOnClickListener {

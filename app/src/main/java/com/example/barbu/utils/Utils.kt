@@ -1,20 +1,28 @@
 package com.example.barbu.utils
 
+import android.annotation.SuppressLint
+import android.content.Context
 import com.example.barbu.cardGame.Card
 import kotlin.random.Random
 
 class Utils {
     companion object {
-        fun positionSuivante(position:Int): Int {
+        fun nextPosition(position:Int): Int {
             return (position+1)%4
         }
 
-        fun randomDeal(possibleCards:MutableSet<Card>): Card {
-            val random= Random
-            val list=possibleCards.toList()
-            val randomIndex=random.nextInt(possibleCards.size)
-            val card=list[randomIndex]
-            return card
+        fun randomDeal(possibleCards: MutableSet<Card>): Card {
+            val random = Random
+            val list = possibleCards.toList()
+            val randomIndex = random.nextInt(possibleCards.size)
+            return list[randomIndex]
+        }
+
+        @SuppressLint("DiscouragedApi")
+        fun getRessourceId(card: Card, context: Context?): Int {
+            val cardString =
+                card.rank.toString().lowercase() + "_of_" + card.suit.toString().lowercase()
+            return context!!.resources.getIdentifier(cardString, "drawable", context.packageName)
         }
     }
 }

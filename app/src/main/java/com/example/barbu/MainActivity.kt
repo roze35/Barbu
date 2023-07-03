@@ -7,16 +7,16 @@ import androidx.databinding.DataBindingUtil
 import com.example.barbu.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    lateinit var bindingMain : ActivityMainBinding
+    private lateinit var bindingMain : ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
 
-        Referee.addPlayer(GraphicalPlayer("Lolo"))
-        Referee.addPlayer(Player("ouest"))
-        Referee.addPlayer(Player("north"))
-        Referee.addPlayer(Player("east"))
+        Referee.addPlayer("Lolo")
+        Referee.addPlayer("ouest")
+        Referee.addPlayer("north")
+        Referee.addPlayer("east")
 
 
         Log.d("affichage","onCreate: MainActivity")

@@ -1,26 +1,21 @@
 package com.example.barbu
 
 import com.example.barbu.fragment.IGFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
-class GraphicalPlayer(name:String):Player(name),ObserverTrick{
+class GraphicalPlayer(name:String,position:Position):Player(name,position){
     lateinit var igFragment:IGFragment
-    init {
-        Referee.trick.addObserverTrick(this)
-    }
-    fun play(){
 
-    }
-
-    override fun gameOver(southScore:Int,westScore:Int,northScore:Int,eastScore:Int){
+    override suspend fun gameOver(southScore:Int, westScore:Int, northScore:Int, eastScore:Int){
         super.gameOver(southScore,westScore,northScore,eastScore)
-        igFragment.gameOver(southScore,westScore,northScore,eastScore)
+        withContext(Dispatchers.Main) {
+            igFragment.gameOver(southScore, westScore, northScore, eastScore)
+        }
     }
 
-    override fun updateTrick() {
-        igFragment.updateTrick()
+    fun showCard(){
+            igFragment.showCards()
     }
-
-
-
 }
