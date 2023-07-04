@@ -1,1 +1,19 @@
-
+name:Run Tests
+on:
+  push:
+    branches:
+    -main
+    
+jobs:
+  test:
+      steps:
+          -name: checkout code
+            uses: actions/checkout@v2
+          -name: setup JDK
+            uses: actions/setup-java@v2
+            with:
+              java-version='11'
+          -name: Build with gradle
+            run: ./gradlew build
+          -name: Run Tests  
+            run: ./gradlew test
