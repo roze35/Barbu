@@ -10,11 +10,11 @@ class Trick  {
     var westCard: Card?=null
     var northCard: Card?=null
     var eastCard: Card?=null
-    private var nbCard=0
+    var nbCard=0
 
-    private var firstCard: Card?=null
-    private var firstPlayer: Player?=null
-    private var winCard: Card?=null
+    var firstCard: Card?=null
+    var firstPlayer: Player?=null
+    var winCard: Card?=null
     var winPlayer: Player?=null
 
     private fun reInit() {

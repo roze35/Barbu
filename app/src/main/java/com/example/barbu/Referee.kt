@@ -121,7 +121,7 @@ class Referee {
         }
 
 
-        private fun possibleCards(hand: MutableSet<Card>): MutableSet<Card> {
+        fun possibleCards(hand: MutableSet<Card>): MutableSet<Card> {
             var possibleCards: MutableSet<Card>
             if (trick.isEmpty()) {
                 possibleCards = hand
