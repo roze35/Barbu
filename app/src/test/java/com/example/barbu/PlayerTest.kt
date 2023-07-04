@@ -54,6 +54,11 @@ class PlayerTest {
     }
 
     @Test
+    fun testTMP(){
+        assertEquals(4, 4)
+    }
+
+    @Test
     fun testAddCard() {
         val cardToAdd = Card(Suit.SPADES,Rank.JACK)
 
