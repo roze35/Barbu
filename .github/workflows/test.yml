@@ -3,13 +3,15 @@ on: [push]
     
 jobs:
   test:
+      runs-on: macos-latest
       steps:
-      -name: checkout code
+      - name: checkout code
         uses: actions/checkout@v2
-      -name: setup JDK
+      - name: setup JDK
         uses: actions/setup-java@v2
-        with: java-version='11'
-      -name: Build with gradle
+        with: 
+            java-version: '11'
+      - name: Build with gradle
         run: ./gradlew build
-      -name: Run Tests  
+      - name: Run Tests  
         run: ./gradlew test
