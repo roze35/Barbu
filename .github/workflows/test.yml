@@ -13,7 +13,7 @@ jobs:
         uses: actions/setup-java@v2
         with: 
             java-version: '11'
-            distribution: 'macos'
+            distribution: 'homebrew'
       - name: Build with gradle
         run: ./gradlew build
       - name: Run Tests  
