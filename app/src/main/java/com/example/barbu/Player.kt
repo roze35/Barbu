@@ -56,13 +56,17 @@ open class Player(val name: String, val position:Position):Parcelable {
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<Player> {
-        override fun createFromParcel(parcel: Parcel): Player {
-            return Player(parcel)
-        }
 
-        override fun newArray(size: Int): Array<Player?> {
-            return arrayOfNulls(size)
+    companion object CREATOR{
+        @JvmField
+        val CREATOR: Parcelable.Creator<Player> = object : Parcelable.Creator<Player> {
+            override fun createFromParcel(parcel: Parcel): Player {
+                return Player(parcel)
+            }
+
+            override fun newArray(size: Int): Array<Player?> {
+                return arrayOfNulls(size)
+            }
         }
     }
 
