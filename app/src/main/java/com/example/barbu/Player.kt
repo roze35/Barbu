@@ -57,7 +57,7 @@ open class Player(val name: String, val position:Position):Parcelable {
     }
 
 
-    companion object CREATOR{
+    companion object {
         @JvmField
         val CREATOR: Parcelable.Creator<Player> = object : Parcelable.Creator<Player> {
             override fun createFromParcel(parcel: Parcel): Player {
