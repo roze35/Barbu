@@ -44,16 +44,20 @@ class TrickTest {
 
         // Ajouter 4 cartes
         trick.playCard(Card(Suit.DIAMONDS, Rank.ACE), player1)
+        print("taillle 1 $trick")
         assertEquals(false, trick.isOver())
         trick.playCard(Card(Suit.HEARTS, Rank.KING), player2)
+        print("taillle 2 $trick")
         assertEquals(false, trick.isOver())
         trick.playCard(Card(Suit.SPADES, Rank.QUEEN), player3)
+        print("taillle 3 $trick")
         assertEquals(false, trick.isOver())
         trick.playCard(Card(Suit.CLUBS, Rank.JACK), player4)
-
+        print("taillle 4 $trick")
         // Vérifier que le Trick est terminé
         assertEquals(true, trick.isOver())
         trick.pickup()
+        print("taillle 0 $trick")
         assertEquals(false, trick.isOver())
     }
 

@@ -17,6 +17,15 @@ class Trick  {
     var winCard: Card?=null
     var winPlayer: Player?=null
 
+    override fun toString():String{
+        var res="Trick : "
+        res+=nbCard
+        res+=" south :$southCard"
+        res+=" west :$westCard"
+        res+=" north :$northCard"
+        res+=" east :$eastCard \n"
+        return res
+    }
     private fun reInit() {
         nbCard=0
         southCard=null
@@ -65,12 +74,13 @@ class Trick  {
     }
 
     fun pickup(){
-        Log.d("affichage","Le gagnant est ${winPlayer!!.name}")
         winPlayer!!.winCards.add(southCard!!)
         winPlayer!!.winCards.add(westCard!!)
         winPlayer!!.winCards.add(northCard!!)
         winPlayer!!.winCards.add(eastCard!!)
         reInit()
     }
+
+
 
 }
