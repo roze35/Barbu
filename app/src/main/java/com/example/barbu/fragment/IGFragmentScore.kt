@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.barbu.R
-import com.example.barbu.Referee
+import com.example.barbu.RefereeHuman
 import com.example.barbu.databinding.ScoreIgBinding
 
 class IGFragmentScore : Fragment() {
@@ -35,8 +35,8 @@ class IGFragmentScore : Fragment() {
             findNavController().navigate(action)
         }
         bindingScore.btNewGame.setOnClickListener {
-            Referee.dealCards()
-            val action = IGFragmentScoreDirections.actionIGFragmentScoreToIGFragment(Referee.humanPlayer)
+            RefereeHuman.dealCards()
+            val action = IGFragmentScoreDirections.actionIGFragmentScoreToIGFragment(RefereeHuman.humanPlayer)
             findNavController().navigate(action)
         }
         return(bindingScore.root)

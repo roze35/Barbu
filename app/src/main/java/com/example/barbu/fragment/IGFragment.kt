@@ -9,9 +9,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.barbu.GraphicalPlayer
+import com.example.barbu.player.GraphicalPlayer
 import com.example.barbu.R
-import com.example.barbu.Referee
+import com.example.barbu.RefereeHuman
+
 import com.example.barbu.adapter.HandAdapter
 import com.example.barbu.databinding.SouthIgBinding
 import com.example.barbu.utils.Utils
@@ -44,7 +45,7 @@ class IGFragment : Fragment() {
         graphicalPlayer = args.joueur
         graphicalPlayer.igFragment = this
         CoroutineScope(Dispatchers.Default).launch{
-                Referee.playIACards()
+                RefereeHuman.playIACards()
         }
 
 
@@ -52,7 +53,7 @@ class IGFragment : Fragment() {
 
     fun trickOver(){
         CoroutineScope(Dispatchers.Default).launch{
-            Referee.playIACards()
+            RefereeHuman.playIACards()
         }
     }
     fun gameOver(southScore: Int, westScore: Int, northScore: Int, eastScore: Int) {
@@ -67,19 +68,19 @@ class IGFragment : Fragment() {
 
 
     fun showCards() {
-        if (Referee.trick.southCard != null) {
+        if (RefereeHuman.trick.southCard != null) {
             binding.southCard.setImageResource(
                 Utils.getRessourceId(
-                    Referee.trick.southCard!!,
+                    RefereeHuman.trick.southCard!!,
                     context
                 )
             )
         } else binding.southCard.setImageResource(R.drawable.dos)
 
-        if (Referee.trick.westCard != null) {
+        if (RefereeHuman.trick.westCard != null) {
             binding.westCard.setImageResource(
                 Utils.getRessourceId(
-                    Referee.trick.westCard!!,
+                    RefereeHuman.trick.westCard!!,
                     context
                 )
             )
@@ -87,10 +88,10 @@ class IGFragment : Fragment() {
             binding.westCard.setImageResource(R.drawable.dos)
         }
 
-        if (Referee.trick.northCard != null) {
+        if (RefereeHuman.trick.northCard != null) {
             binding.northCard.setImageResource(
                 Utils.getRessourceId(
-                    Referee.trick.northCard!!,
+                    RefereeHuman.trick.northCard!!,
                     context
                 )
             )
@@ -98,10 +99,10 @@ class IGFragment : Fragment() {
             binding.northCard.setImageResource(R.drawable.dos)
         }
 
-        if (Referee.trick.eastCard != null) {
+        if (RefereeHuman.trick.eastCard != null) {
             binding.eastCard.setImageResource(
                 Utils.getRessourceId(
-                    Referee.trick.eastCard!!,
+                    RefereeHuman.trick.eastCard!!,
                     context
                 )
             )

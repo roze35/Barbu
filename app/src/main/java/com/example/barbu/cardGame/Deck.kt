@@ -4,7 +4,7 @@ import com.example.barbu.utils.Rank
 import com.example.barbu.utils.Suit
 
 class Deck {
-    private val cards: MutableList<Card> = mutableListOf()
+    val cards: MutableList<Card> = mutableListOf()
 
     init {
         reinit()

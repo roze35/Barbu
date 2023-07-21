@@ -1,6 +1,8 @@
 package com.example.barbu
 
+import com.example.barbu.player.Player
 import com.example.barbu.cardGame.Card
+import com.example.barbu.utils.Position
 import com.example.barbu.utils.Suit
 import com.example.barbu.utils.Rank
 import org.junit.Assert.assertEquals
@@ -19,10 +21,10 @@ class TrickTest {
     @Before
     fun setUp() {
         trick = Trick()
-        player1 = Player("j1",Position.SOUTH)
-        player2 = Player("j2",Position.WEST)
-        player3 = Player("j3",Position.NORTH)
-        player4 = Player("j4",Position.EAST)
+        player1 = Player("j1", Position.SOUTH)
+        player2 = Player("j2", Position.WEST)
+        player3 = Player("j3", Position.NORTH)
+        player4 = Player("j4", Position.EAST)
     }
 
     @Test

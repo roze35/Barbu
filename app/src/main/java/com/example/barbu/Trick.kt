@@ -1,7 +1,8 @@
 package com.example.barbu
 
-import android.util.Log
+import com.example.barbu.player.Player
 import com.example.barbu.cardGame.Card
+import com.example.barbu.utils.Position
 import com.example.barbu.utils.Suit
 
 
@@ -45,7 +46,7 @@ class Trick  {
     fun requiredSuit(): Suit {
         return firstCard!!.suit
     }
-    private fun addCard(c:Card, pos:Position){
+    private fun addCard(c:Card, pos: Position){
         when(pos){
             Position.SOUTH->southCard=c
             Position.EAST->eastCard=c

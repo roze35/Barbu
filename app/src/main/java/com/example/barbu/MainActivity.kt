@@ -13,11 +13,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
 
-        Referee.addPlayer("Lolo")
-        Referee.addPlayer("ouest")
-        Referee.addPlayer("north")
-        Referee.addPlayer("east")
-
 
         Log.d("affichage","onCreate: MainActivity")
         bindingMain= DataBindingUtil.setContentView(this,R.layout.activity_main)

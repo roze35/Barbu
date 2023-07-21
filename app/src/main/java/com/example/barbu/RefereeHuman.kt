@@ -1,14 +1,18 @@
 package com.example.barbu
 
 import android.util.Log
+import com.example.barbu.player.GraphicalPlayer
 import com.example.barbu.player.Player
 import com.example.barbu.cardGame.Card
 import com.example.barbu.cardGame.Deck
 import com.example.barbu.utils.Position
 import com.example.barbu.utils.Suit
 import com.example.barbu.utils.Utils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
-open class Referee {
+class RefereeHuman {
 
     companion object {
         private var numTrick=1
@@ -17,63 +21,97 @@ open class Referee {
         val trick: Trick = Trick()
 
         private var currentPosition = 0
+        lateinit var humanPlayer: GraphicalPlayer
+        private var delay: Long =1000
 
         fun currentPlayer(): Player {
             return players[currentPosition]
         }
 
+        suspend fun justWait(){
+            delay(delay)
+        }
+
         fun addPlayers(){
-            players.add(Player("South", Position.SOUTH))
+            humanPlayer= GraphicalPlayer("South", Position.SOUTH)
+            players.add(humanPlayer)
             players.add(Player("West", Position.WEST))
             players.add(Player("North", Position.NORTH))
             players.add(Player("East", Position.EAST))
         }
         fun addPlayer(name:String){
             val p =when(players.size){
-                0 -> Player(name, Position.SOUTH)
+                0 -> GraphicalPlayer(name, Position.SOUTH)
                 1-> Player(name, Position.WEST)
                 2-> Player(name, Position.NORTH)
                 else-> Player(name, Position.EAST)
             }
             players.add(p)
+            if (p is GraphicalPlayer) humanPlayer=p
         }
 
         fun nextPlayer(){
             currentPosition=Utils.nextPosition(currentPosition)
         }
 
-       fun playIACards() {
+        suspend fun playIACards()= withContext(Dispatchers.Default) {
             var currentPlayer = players[currentPosition]
-            Log.d("affichage","traitement du pli $numTrick")
-            while (!trick.isOver()) {
+            while ((!trick.isOver()) && (currentPlayer !is GraphicalPlayer)) {
                 val card = currentPlayer.playRandomCard(possibleCards(currentPlayer.hand))
                 Log.d("affichage", "carte jouee $card par ${currentPlayer.name}")
                 trick.playCard(card, currentPlayer)
+                withContext(Dispatchers.Main) {
+                    humanPlayer.showCard()
+                }
+                delay(delay)
                 currentPosition = Utils.nextPosition(currentPosition)
                 currentPlayer = players[currentPosition]
             }
-            endTrick()
-            numTrick += 1
-            Log.d("affichage", "numero de pli $numTrick")
-            currentPosition = players.indexOf(trick.winPlayer) % 4
 
-            trick.pickup()
+            if (trick.isOver()) {
+                numTrick += 1
+                Log.d("affichage", "numero de pli $numTrick")
+                currentPosition = players.indexOf(trick.winPlayer)  % 4
 
-            if (numTrick > 8) {
-                val southScore = computePoint(players[0].winCards)
-                val westScore = computePoint(players[1].winCards)
-                val northScore = computePoint(players[2].winCards)
-                val eastScore = computePoint(players[3].winCards)
-                for (p in players) p.endGame(southScore,westScore,northScore,eastScore)
-                //reInit()
-                //dealCards()
+                withContext(Dispatchers.Main) {
+                    humanPlayer.showCard()
+                }
+
+                trick.pickup()
+
+                withContext(Dispatchers.Main) {
+                    humanPlayer.showCard()
+                }
+                if (numTrick > 8) {
+                    val southScore = computePoint(players[0].winCards)
+                    val westScore = computePoint(players[1].winCards)
+                    val northScore = computePoint(players[2].winCards)
+                    val eastScore = computePoint(players[3].winCards)
+                    gameOver(southScore, westScore, northScore, eastScore)
+                } else {
+                    withContext(Dispatchers.Main) {
+                        humanPlayer.igFragment.trickOver()
+                    }
+                }
             }
-
-
         }
 
-        private fun endTrick(){
-            for (p in players) p.endTrick()
+
+        fun playCard(c: Card): Boolean {
+            val p= players[currentPosition]
+            val possibleCards: MutableSet<Card> = possibleCards(p.hand)
+            return if (c in possibleCards) {
+                p.hand.remove(c)
+                trick.playCard(c,p)
+                true
+            } else false
+        }
+
+        private suspend fun gameOver(southScore:Int, westScore:Int, northScore:Int, eastScore:Int){
+            for (p in players){
+                p.gameOver(southScore,westScore,northScore,eastScore)
+            }
+
         }
 
         private fun extractRequiredSuit(hand: MutableSet<Card>): MutableSet<Card> {
@@ -93,13 +131,6 @@ open class Referee {
             return res
         }
 
-        fun showCards():String{
-            var res=""
-            for (p in players){
-                res+="${p.position} ${p.hand.toString()}\n"
-            }
-            return res
-        }
 
         fun possibleCards(hand: MutableSet<Card>): MutableSet<Card> {
             var possibleCards: MutableSet<Card>
@@ -113,7 +144,7 @@ open class Referee {
             return possibleCards
         }
 
-        fun reInit() {
+        private fun reInit() {
             numTrick=1
             for (p in players){
                 p.reInit()
@@ -124,25 +155,22 @@ open class Referee {
 
 
         fun dealCards(){
+            Log.d("affichage","debut de dealCards")
+            Log.d("affichage","nombre de joueurs ${players.size}")
             reInit()
             deck.shuffle()
             var card : Card?
             do {
+                Log.d("affichage","debut d'un pli")
+                Log.d("affichage","nombre de cartes restantes ${deck.cards.size}")
                 for (p in players) {
                     card = deck.deal()
                     p.addCard(card)
                 }
             } while(!deck.isEmpty())
-        }
-
-        fun generateCsv():String{
-            var res=""
-            for (p in players) {res+=p.generateCsv()}
-            return res
+            Log.d("affichage","debut de dealCards")
         }
     }
-
-
 
 
 

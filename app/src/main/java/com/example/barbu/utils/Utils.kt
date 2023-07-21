@@ -11,6 +11,10 @@ class Utils {
             return (position+1)%4
         }
 
+        fun positionToInt(p: Position):Int{
+            return p.ordinal
+        }
+
         fun randomDeal(possibleCards: MutableSet<Card>): Card {
             val random = Random
             val list = possibleCards.toList()
@@ -23,6 +27,10 @@ class Utils {
             val cardString =
                 card.rank.toString().lowercase() + "_of_" + card.suit.toString().lowercase()
             return context!!.resources.getIdentifier(cardString, "drawable", context.packageName)
+        }
+
+        fun cardToInt(card:Card):Int{
+            return card.suit.ordinal*8+(card.rank.ordinal)
         }
     }
 }

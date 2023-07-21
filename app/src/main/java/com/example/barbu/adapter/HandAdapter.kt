@@ -7,17 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView.*
-import com.example.barbu.GraphicalPlayer
-import com.example.barbu.Position
+import com.example.barbu.player.GraphicalPlayer
+import com.example.barbu.utils.Position
 import com.example.barbu.R
-import com.example.barbu.Referee
+import com.example.barbu.RefereeHuman
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class HandAdapter(player:GraphicalPlayer) : Adapter<HandAdapter.MyViewHolder>() {
-    private val p:GraphicalPlayer=player
+class HandAdapter(player: GraphicalPlayer) : Adapter<HandAdapter.MyViewHolder>() {
+    private val p: GraphicalPlayer =player
 
 
     class MyViewHolder(itemView: View) : ViewHolder(itemView) {
@@ -46,10 +46,10 @@ class HandAdapter(player:GraphicalPlayer) : Adapter<HandAdapter.MyViewHolder>() 
             context.resources.getIdentifier(cardString, "drawable", context.packageName)
         holder.cardView.setImageResource(imageCardId)
         holder.cardView.setOnClickListener {
-            if (Referee.currentPlayer().position==Position.SOUTH) {
+            if (RefereeHuman.currentPlayer().position== Position.SOUTH) {
                 val c = p.hand.toList()[position]
                 //Log.d("affichage", "Essaie de jouer la carte " + c.toString())
-                if (Referee.playCard(c)) {
+                if (RefereeHuman.playCard(c)) {
                     Log.d("affichage", "Carte jouee $c par ${p.name}")
                     notifyDataSetChanged()
                     CoroutineScope(Dispatchers.Main).launch{
@@ -57,16 +57,16 @@ class HandAdapter(player:GraphicalPlayer) : Adapter<HandAdapter.MyViewHolder>() 
                     }
 
                     CoroutineScope(Dispatchers.Default).launch{
-                        Referee.justWait()
-                        Referee.nextPlayer()
-                        Referee.playIACards()
+                        RefereeHuman.justWait()
+                        RefereeHuman.nextPlayer()
+                        RefereeHuman.playIACards()
                     }
 
                 } else {
                     Log.d("affichage", "Argh... il est impossigle de jouer cette carte")
                 }
             } else {
-                Log.d("affichage","ce n'est pas au joueur sud de jouer mais au joueur "+Referee.currentPlayer().position)
+                Log.d("affichage","ce n'est pas au joueur sud de jouer mais au joueur "+RefereeHuman.currentPlayer().position)
             }
         }
     }

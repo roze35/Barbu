@@ -1,7 +1,9 @@
 package com.example.barbu
 
 
+import com.example.barbu.player.Player
 import com.example.barbu.cardGame.Card
+import com.example.barbu.utils.Position
 import com.example.barbu.utils.Rank
 import com.example.barbu.utils.Suit
 import org.junit.Assert.assertEquals
@@ -10,7 +12,7 @@ import org.junit.Test
 
 
 class PlayerTest {
-    private var player: Player=Player("Lolo",Position.SOUTH)
+    private var player: Player = Player("Lolo", Position.SOUTH)
 /*
     @Before
     fun setUp() {
@@ -47,7 +49,7 @@ class PlayerTest {
 
         //Retirer l'ace de carreau
         val cardToRemove = Card(Suit.DIAMONDS,Rank.ACE)
-        player.removeCard(cardToRemove)
+        player.hand.remove(cardToRemove)
 
         // Vérifier que la carte a été supprimée de la main
         assertEquals(3, player.hand.size)
@@ -77,7 +79,7 @@ class PlayerTest {
     @Test
     fun testPlayRandomCard() {
 
-        val player1=Player("Lolo",Position.SOUTH)
+        val player1= Player("Lolo", Position.SOUTH)
         player1.addCard(Card(Suit.HEARTS,Rank.ACE))
         player1.addCard(Card(Suit.HEARTS,Rank.KING))
         player1.addCard(Card(Suit.HEARTS,Rank.QUEEN))
@@ -93,7 +95,7 @@ class PlayerTest {
         assertEquals(3, possibleCards.size)
         assertEquals(true, possibleCards.contains(playedCard))
 
-        val player2=Player("j2",Position.WEST)
+        val player2= Player("j2", Position.WEST)
         player2.addCard(Card(Suit.DIAMONDS,Rank.ACE))
         player2.addCard(Card(Suit.DIAMONDS,Rank.KING))
         player2.addCard(Card(Suit.HEARTS,Rank.QUEEN))
@@ -104,7 +106,7 @@ class PlayerTest {
         assertEquals(true, possibleCards.contains(playedCard2))
         assertEquals(Card(Suit.HEARTS,Rank.QUEEN), possibleCards2.elementAt(0))
 
-        val player3=Player("j3",Position.NORTH)
+        val player3= Player("j3", Position.NORTH)
         player3.addCard(Card(Suit.DIAMONDS,Rank.ACE))
         player3.addCard(Card(Suit.DIAMONDS,Rank.KING))
         player3.addCard(Card(Suit.DIAMONDS,Rank.QUEEN))

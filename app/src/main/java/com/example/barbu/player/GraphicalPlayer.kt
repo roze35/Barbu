@@ -1,11 +1,12 @@
-package com.example.barbu
+package com.example.barbu.player
 
+import com.example.barbu.utils.Position
 import com.example.barbu.fragment.IGFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 
-class GraphicalPlayer(name:String,position:Position):Player(name,position){
+class GraphicalPlayer(name:String,position: Position): Player(name,position){
     lateinit var igFragment:IGFragment
 
     override suspend fun gameOver(southScore:Int, westScore:Int, northScore:Int, eastScore:Int){

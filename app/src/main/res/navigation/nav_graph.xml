@@ -17,7 +17,7 @@
         android:label="IGFragment" >
         <argument
             android:name="joueur"
-            app:argType="com.example.barbu.GraphicalPlayer" />
+            app:argType="com.example.barbu.player.GraphicalPlayer" />
         <action
             android:id="@+id/action_IGFragment_to_IGFragmentScore"
             app:destination="@id/IGFragmentScore" />
